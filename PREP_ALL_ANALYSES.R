@@ -12,5 +12,4 @@ source("02_load_metadata.R")
 
 source("05_load_fooof_measures.R")
 
-source("10_analyze_generate_tbl_demographics.R")
 
