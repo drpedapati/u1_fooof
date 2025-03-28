@@ -358,6 +358,19 @@ anova(model_reduced_fixed)
 
 # A. For lobe effects (do slopes vary among brain regions?)
 emm_lobe <- emmeans(model_reduced_fixed, ~ lobe)
+#  lobe       emmean     SE  df lower.CL upper.CL
+#  Central     1.668 0.0499 137    1.569    1.767
+#  Cingulate   1.533 0.0499 137    1.434    1.632
+#  Frontal     1.184 0.0499 137    1.085    1.282
+#  Occipital   1.476 0.0499 137    1.378    1.575
+#  Parietal    1.755 0.0499 137    1.656    1.853
+#  Prefrontal  0.886 0.0499 137    0.787    0.984
+#  Temporal    1.130 0.0499 137    1.031    1.229
+
+# Results are averaged over the levels of: group, sex 
+# Degrees-of-freedom method: containment 
+# Confidence level used: 0.95 
+
 pairs(emm_lobe, adjust = "tukey")  # Pairwise comparisons between lobes
 
 # contrast               estimate     SE  df t.ratio p.value
@@ -439,8 +452,8 @@ group_sex_colors <- c(
 
 # Plot A: Lobes across all subjects
 plot_lobe <- ggplot(emmeans_lobe  %>% broom.mixed::tidy(), aes(x = reorder(lobe, estimate), y = estimate, fill = lobe)) +
+  geom_errorbar(aes(ymin = estimate - std.error, ymax = estimate + std.error), width = 0.1) +
   geom_bar(stat = "identity", width = 0.7) +
-  geom_errorbar(aes(ymin = estimate - std.error, ymax = estimate + std.error), width = 0.3) +
   scale_fill_manual(values = lobe_colors) +
   labs(title = "A. Aperiodic Slope by Brain Lobe",
        x = NULL,
@@ -462,8 +475,8 @@ emmeans_group_sex$group_sex <- paste(emmeans_group_sex$group, emmeans_group_sex$
 emmeans_group_sex <- emmeans_group_sex %>% broom.mixed::tidy()
 
 plot_group_sex <- ggplot(emmeans_group_sex, aes(x = group, y = estimate, fill = group_sex)) +
+  geom_errorbar(aes(ymin = estimate - std.error, ymax = estimate + std.error), width = 0.1) +
   geom_bar(stat = "identity", width = 0.7) +
-  geom_errorbar(aes(ymin = estimate - std.error, ymax = estimate + std.error), width = 0.3) +
   scale_fill_manual(values = group_sex_colors) +
   facet_wrap(~ sex, labeller = labeller(sex = c("M" = "Males", "F" = "Females"))) +
   labs(title = "B. Group Differences by Sex",
@@ -498,9 +511,10 @@ emmeans_lobe_by_group_sex <- emmeans_lobe_by_group_sex %>% broom.mixed::tidy()
 plot_detailed <- ggplot(emmeans_lobe_by_group_sex, 
                        aes(x = reorder(lobe, estimate), y = estimate, 
                            fill = group_sex, group = group_sex)) +
-  geom_bar(stat = "identity", position = position_dodge(0.8), width = 0.7) +
   geom_errorbar(aes(ymin = estimate - std.error, ymax = estimate + std.error), 
-                position = position_dodge(0.8), width = 0.25) +
+                position = position_dodge(0.8), width = 0.1) +
+  geom_bar(stat = "identity", position = position_dodge(0.8), width = 0.7) +
+
   scale_fill_manual(values = group_sex_colors,
                    labels = c("FXS Female", "FXS Male", "TDC Female", "TDC Male")) +
   facet_wrap(~ lobe, ncol = 4) +
@@ -525,7 +539,7 @@ plot_detailed <- ggplot(emmeans_lobe_by_group_sex,
 # Here we'll create a conceptual representation rather than anatomically precise
 
 # Create a combined multi-panel figure
-combined_plot <- (plot_lobe + plot_group_sex) / plot_detailed +
+combined_plot <- (plot_lobe + plot_group_sex) +
   plot_layout(heights = c(1, 1.5)) +
   plot_annotation(
     title = "Aperiodic Slopes Across Brain Regions in FXS and TDC Groups",
