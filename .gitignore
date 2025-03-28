@@ -1,0 +1,15 @@
+*.csv
+*.parquet
+*.json
+*.jsonl
+*.jsonl.gz
+*.jsonl.gz.part
+*.jsonl.part
+*.png
+*.pdf
+*.html
+*.txt
+*.log
+*.log.gz
+*.log.gz.part
+.DS_Store
