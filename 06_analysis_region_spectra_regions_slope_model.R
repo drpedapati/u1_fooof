@@ -64,6 +64,7 @@ library(ggplot2)   # For plotting
 library(dplyr)     # For data manipulation
 library(multcomp)  # For multiple comparison adjustment
 
+
 # 1. Fit a linear mixed-effects model
 # Including random intercepts for subjects to account for within-subject correlation
 model <- lme(subject_lobe_slope ~ group * sex * lobe, 
@@ -257,10 +258,10 @@ anova(model_reduced_fixed)
 # r$> anova(model_reduced_fixed)
 #             numDF denDF  F-value p-value
 # (Intercept)     1   828 942.4382  <.0001
-# group           1   137   8.6509  0.0038
+# group           1   137   8.6509  0.0038  ***
 # sex             1   137   0.5787  0.4481
-# lobe            6   828 195.9907  <.0001
-# group:sex       1   137   6.0795  0.0149
+# lobe            6   828 195.9907  <.0001  ***
+# group:sex       1   137   6.0795  0.0149  ***
 # group:lobe      6   828   1.6500  0.1304
 # sex:lobe        6   828   1.2309  0.2879
 
